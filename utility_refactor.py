@@ -30,10 +30,10 @@ def extract_node_id_for_label(node_label_list, target_label):
     # return:
     #     node_id_list - the list of node id whose label is the target_label
 
-    #list to store the node id
+    # list to store the node id
     node_id_list = []
 
-    #iterate through the node population and check for matched label
+    # iterate through the node population and check for matched label
     for id in range(len(node_label_list)):
         if node_label_list[id] == target_label:
             #stored node id of the matched node
@@ -78,9 +78,9 @@ def node_id_list_to_mask(node_id_list, num_node):
     #     bool_list - a boolean list of length num_node, with each value
     #                 indicating whether each node id is in the node_id_list
 
-    #construct a all-False boolean list of length num_node
+    # construct a all-False boolean list of length num_node
     bool_list = num_node * [False]
-    #change value to True if the corresponding node id is in the node_id_list
+    # change value to True if the corresponding node id is in the node_id_list
     for i in range(num_node):
         if i in node_id_list:
             bool_list[i] = True
@@ -165,38 +165,43 @@ def extract_k_neighbor(G, target_vertex, k):
     # return:
     #     a list of node id from the vertexes of the corresponding neighbor
 
-    #set to store node id
+    # set to store node id
     neighbor_set = set([target_vertex])
 
-    #iterative extract node id from the k-hop neighbor
+    # iterative extract node id from the k-hop neighbor
     for l in range(k):
         neighbor_set = set((node_id for vertex in neighbor_set for node_id in G[vertex]))
 
     return list(neighbor_set)
 
 ################################################################################
-#
+#  extract the node id for (0~k)-th neighbors of a given vertex in graph G
 ################################################################################
-def extract_k_hop_neighbor(nx_G, vertex, k):
+def extract_k_hop_neighbor(G, vertex, k):
     # input:
-    #     nx_G - a networkx graph
-    #     vertex -
-    #     k -
+    #     G - a networkx graph
+    #     vertex - the target vertex whose neighbor to be extracted
+    #     k - the radius of the neighbors to be extracted
     # return:
-    #
+    #     neighbor_list - a list containing k+1 sets of the vertexes of the
+    #                     corresponding 0~k -th neighbor, no repeating
 
+    # list to store the neighbors
     neighbor_list = []
+    # set to store the visited vertexes
     visited       = set()
 
     neighbor_list.append({vertex})
     visited.add(vertex)
 
     for i in range(k):
+        # set to store the i-th neighbor, possibly repeatted
         neighbor_candidate = set()
         for v in neighbor_list[i]:
-            to_vist = set([n for n in nx_G.neighbors(v)])
+            to_vist = set([n for n in G.neighbors(v)])
             neighbor_candidate.update(to_vist)
 
+        # set to store the i-th neighbor, with no repeat
         next_neighbor = set()
         for u in neighbor_candidate:
             if u not in visited:
@@ -208,19 +213,23 @@ def extract_k_hop_neighbor(nx_G, vertex, k):
     return neighbor_list
 
 ################################################################################
-#  extract the node label for the k-th neighbor
+#  extract the node label for the (0~k)-th neighbor of a given vertex in graph G
 ################################################################################
-def extract_k_hop_neighbor(nx_G, vertex, k, node_label_list):
+def extract_k_hop_neighbor_label(G, vertex, k, node_label_list):
     # input:
-    #     nx_G:
-    #     vertex
-    #     k
-    #     node_label_list
+    #     G - a networkx graph
+    #     vertex - the target vertex whose neighbor to be extracted
+    #     k - the radius of the neighbors to be extracted
+    #     node_label_list -
     # return:
-    #     neighbor_list_label
+    #     neighbor_list_label - a list containing (k+1) sub-lists of the lables
+    #                           of 0~k -th neighbors
 
+    # list to store the neighbors
     neighbor_list = []
+    # list to store the neighbors' label
     neighbor_list_label = []
+    # list to store the visited vertexes
     visited       = set()
 
     neighbor_list.append({vertex})
@@ -228,12 +237,15 @@ def extract_k_hop_neighbor(nx_G, vertex, k, node_label_list):
     visited.add(vertex)
 
     for i in range(k):
+        # set to store the i-th neighbor, possibly repeatted
         neighbor_candidate = set()
         for v in neighbor_list[i]:
-            to_vist = set([n for n in nx_G.neighbors(v)])
+            to_vist = set([n for n in G.neighbors(v)])
             neighbor_candidate.update(to_vist)
 
+        # set to store the i-th neighbor, with no repeat
         next_neighbor       = set()
+        # list to store the i-th neighbors' label
         next_neighbor_label = []
         for u in neighbor_candidate:
             if u not in visited:
