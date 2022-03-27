@@ -13,9 +13,10 @@ DEFAULT_TRAIN_PERCENT = 0.1
 def load_data(name):
     # input:
     #     name - a string specifying the dgl dataset to be loaded
-    #     data_info - the arguments dictionary
     # return:
     #     graph - a dgl graph
+    #     data_info - a dictionary containing the dataset information
+
     data_info = {}
     if name == 'cora':
         dataset = dgl.data.CoraGraphDataset()
