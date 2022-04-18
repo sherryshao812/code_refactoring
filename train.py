@@ -97,8 +97,6 @@ def train_multihead_model(model, args, data_info, training_dict):
             if best_accuracy < accuracy:
                 best_accuracy = accuracy
 
-    # input("checking point: testing procedure is working")
-
     return loss.item(), accuracy, best_accuracy, model
 
 

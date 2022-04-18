@@ -22,7 +22,7 @@ class GCNStoModel_MultiHead(nn.Module):
 
         self.conv1 = dglnn.SAGEConv(in_feats, hid_feats, aggregator_type='gcn')
         self.conv2 = dglnn.SAGEConv(hid_feats, out_feats, aggregator_type='gcn')
-        self.hid_feats = hid_feats
+        # self.hid_feats = hid_feats
 
         self.heads = nn.ModuleList([])
         #create prediction heads
@@ -65,7 +65,7 @@ class SAGEStoModel_MultiHead(nn.Module):
 
         self.conv1 = dglnn.SAGEConv(in_feats, hid_feats, aggregator_type='mean')
         self.conv2 = dglnn.SAGEConv(hid_feats, out_feats, aggregator_type='mean')
-        self.hid_feats = hid_feats
+        # self.hid_feats = hid_feats
 
         self.heads = nn.ModuleList([])
         #create prediction heads
@@ -106,9 +106,9 @@ class GATStoModel_MultiHead(nn.Module):
     def __init__(self, in_feats, hid_feats, out_feats, num_task, num_heads, pred_head_out):
         super().__init__()
 
-        self.conv1.append(dglnn.GATConv(in_feats, hid_feats, num_heads))
-        self.conv2.append(dglnn.GATConv(hid_feats*num_heads, out_feats, num_heads))
-        self.hid_feats = hid_feats
+        self.conv1 = dglnn.GATConv(in_feats, hid_feats, num_heads)
+        self.conv2 = dglnn.GATConv(hid_feats*num_heads, out_feats, num_heads)
+        # self.hid_feats = hid_feats
 
         self.heads = nn.ModuleList([])
         #create prediction heads

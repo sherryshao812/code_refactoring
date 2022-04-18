@@ -55,15 +55,10 @@ def load_data(name):
 
     node_features = graph.ndata['feat']
     node_labels = graph.ndata['label']
-    # default_train_mask = graph.ndata['train_mask']
-    # default_valid_mask = graph.ndata['val_mask']
-    # default_test_mask  = graph.ndata['test_mask']
+
     n_features = node_features.shape[1]
     n_labels = int(node_labels.max().item() + 1)
 
-    # data_info['train_mask']      = default_train_mask
-    # data_info['test_mask']       = default_test_mask
-    # data_info['validation_mask'] =  default_valid_mask
     data_info['num_infeat']     = n_features
     data_info['num_class']       = n_labels
     data_info['graph']           = graph

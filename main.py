@@ -4,7 +4,7 @@ import argparse
 import math
 import os
 import dgl
-import statistics 
+import statistics
 import json
 import random
 
@@ -47,168 +47,81 @@ def fix_random_seed(seed):
    torch.manual_seed(seed)
    random.seed(seed)
    np.random.seed(seed)
-   return 
- 
+   return
+
+
+def main():
+    parser = argparse.ArgumentParser(description = 'Continual Learning')
+    parser.add_argument('-d', '--data', type = str, default = 'cora',
+                        help = 'dataset used, can be chosen from cora, coau_cs, reddit')
+    a = parser.parse_args()
+    data = a.data
+
+    strategies = ['uniform','degree','cluster','center','max_cover','centroid']
+    for method in strategies:
+        file_dir = 'test_result/'+data+'_it_'+method+'.txt'
+        args['epoches'] = 10
+        args['num_hidfeat'] = 64
+        args['replay_size'] = 2
+        with open(file_dir, 'w') as file:
+            for random_seed in range(5):
+                fix_random_seed(random_seed)
+                phase_accuracy = inc_exp_sto.incremental_trainig_replay(args, data, 'SAGE', method)
+                print(phase_accuracy)
+                last_phase = phase_accuracy[-1]
+
+                class_acc_list = last_phase['prev_class_acc']
+                class_forget_list = last_phase['prev_class_forget']
+
+                class_acc_list.append(last_phase['test_accuracy'])
+                print(class_acc_list)
+                print(class_forget_list)
+
+                atp = sum(class_acc_list)/len(class_acc_list)
+                atf = sum(class_forget_list)/(len(class_forget_list))
+
+                randomseed_line = 'random seed: ' + str(random_seed)
+                atpline  = ' atp: ' + str(atp)
+                atfline  = ' atf: ' + str(atf) + '\n'
+
+
+                file.write(randomseed_line)
+                file.write(atpline)
+                file.write(atfline)
+
+def test():
+    method = 'uniform'
+    file_dir = 'test_result/test_cora_it_'+method+'.txt'
+    args['epoches'] = 10
+    args['num_hidfeat'] = 64
+    args['replay_size'] = 2
+    with open(file_dir, 'w') as file:
+        for random_seed in range(2):
+            fix_random_seed(random_seed)
+            phase_accuracy = inc_exp_sto.incremental_trainig_replay(args, 'cora', 'SAGE', method)
+            print(phase_accuracy)
+            last_phase = phase_accuracy[-1]
+
+            class_acc_list = last_phase['prev_class_acc']
+            class_forget_list = last_phase['prev_class_forget']
+
+            class_acc_list.append(last_phase['test_accuracy'])
+            print(class_acc_list)
+            print(class_forget_list)
+
+            atp = sum(class_acc_list)/len(class_acc_list)
+            atf = sum(class_forget_list)/(len(class_forget_list))
+
+            randomseed_line = 'random seed: ' + str(random_seed)
+            atpline  = ' atp: ' + str(atp)
+            atfline  = ' atf: ' + str(atf) + '\n'
+
+
+            file.write(randomseed_line)
+            file.write(atpline)
+            file.write(atfline)
 
 if __name__ == '__main__':
-   # inc_exp_sto.regular_training(args,'reddit','SAGE')
+    main()
 
-
-   # file_dir = 'result/cora_it_nor.txt'
-   # file = open(file_dir, "w")
-   # args['epoches'] = 30
-   # args['num_hidfeat'] = 16
-   # for random_seed in range(50):
-   #    fix_random_seed(random_seed)
-   #    phase_accuracy = inc_exp_sto.incremental_trainig(args,'cora','SAGE')
-   #    last_phase = phase_accuracy[-1]
-
-   #    class_acc_list = last_phase['prev_class_acc']
-   #    class_forget_list = last_phase['prev_class_forget']
-
-   #    class_acc_list.append(last_phase['test_accuracy'])
-
-   #    atp = sum(class_acc_list)/len(class_acc_list)
-   #    atf = sum(class_forget_list)/(len(class_forget_list))
-
-   #    randomseed_line = 'random seed: ' + str(random_seed) 
-   #    atpline  = ' atp: ' + str(atp) 
-   #    atfline  = ' atf: ' + str(atf) + '\n'
-      
-   #    file.write(randomseed_line)
-   #    file.write(atpline)
-   #    file.write(atfline)
-   # file.close()
-
-   # file_dir = 'result/cs_it_nor.txt'
-   # file = open(file_dir, "w")
-   # args['epoches'] = 15
-   # args['num_hidfeat'] = 32
-   # for random_seed in range(20):
-   #    fix_random_seed(random_seed)
-   #    phase_accuracy = inc_exp_sto.incremental_trainig(args,'coau_cs','SAGE')
-   #    last_phase = phase_accuracy[-1]
-
-   #    class_acc_list = last_phase['prev_class_acc']
-   #    class_forget_list = last_phase['prev_class_forget']
-
-   #    class_acc_list.append(last_phase['test_accuracy'])
-
-   #    atp = sum(class_acc_list)/len(class_acc_list)
-   #    atf = sum(class_forget_list)/(len(class_forget_list))
-
-   #    randomseed_line = 'random seed: ' + str(random_seed) 
-   #    atpline  = ' atp: ' + str(atp) 
-   #    atfline  = ' atf: ' + str(atf) + '\n'
-      
-   #    file.write(randomseed_line)
-   #    file.write(atpline)
-   #    file.write(atfline)
-   # file.close()
-
-      
-
-   # phase_accuracy = inc_exp_sto.incremental_trainig(args,'reddit','SAGE')
-   # phase_accuracy = inc_exp_sto.incremental_trainig(args,'coau_cs','SAGE')
-
-   # strategy list
-   # strategies = ['uniform','degree','cluster','center','max_cover','centroid']
-   # # strategies = ['max_cover','centroid']
-   # # strategies = ['centroid']
-   # for method in strategies:
-   #    file_dir = 'result/cora_it_'+method+'.txt'
-   #    file = open(file_dir, "w")
-   #    args['epoches'] = 30
-   #    args['num_hidfeat'] = 16
-   #    args['replay_size'] = 1
-   #    for random_seed in range(5):
-   #       fix_random_seed(random_seed)
-   #       phase_accuracy = inc_exp_sto.incremental_trainig_replay(args,'cora','SAGE',method)
-   #       last_phase = phase_accuracy[-1]
-
-   #       class_acc_list = last_phase['prev_class_acc']
-   #       class_forget_list = last_phase['prev_class_forget']
-
-   #       class_acc_list.append(last_phase['test_accuracy'])
-
-   #       atp = sum(class_acc_list)/len(class_acc_list)
-   #       atf = sum(class_forget_list)/(len(class_forget_list))
-
-   #       randomseed_line = 'random seed: ' + str(random_seed) 
-   #       atpline  = ' atp: ' + str(atp) 
-   #       atfline  = ' atf: ' + str(atf) + '\n'
-         
-   #       file.write(randomseed_line)
-   #       file.write(atpline)
-   #       file.write(atfline)
-   #    file.close()
-
-   # for method in strategies:
-   #    file_dir = 'result/cs_it_'+method+'_cmd.txt'
-   #    file = open(file_dir, "w")
-   #    args['epoches'] = 20
-   #    args['num_hidfeat'] = 32
-   #    args['replay_size'] = 2
-   #    for random_seed in range(20):
-   #       fix_random_seed(random_seed)
-   #       phase_accuracy = inc_exp_sto.incremental_trainig_replay(args,'coau_cs','SAGE',method)
-   #       last_phase = phase_accuracy[-1]
-
-   #       class_acc_list = last_phase['prev_class_acc']
-   #       class_forget_list = last_phase['prev_class_forget']
-
-   #       class_acc_list.append(last_phase['test_accuracy'])
-
-   #       atp = sum(class_acc_list)/len(class_acc_list)
-   #       atf = sum(class_forget_list)/(len(class_forget_list))
-
-   #       randomseed_line = 'random seed: ' + str(random_seed) 
-   #       atpline  = ' atp: ' + str(atp) 
-   #       atfline  = ' atf: ' + str(atf) + '\n'
-         
-   #       file.write(randomseed_line)
-   #       file.write(atpline)
-   #       file.write(atfline)
-   #    file.close()
-
-
-   strategies = ['uniform','degree','cluster','center','max_cover','centroid']
-   for method in strategies:
-      file_dir = 'result/reddit_it_'+method+'.txt'
-      args['epoches'] = 10
-      args['num_hidfeat'] = 64
-      args['replay_size'] = 2
-      file = open(file_dir, "w")
-      for random_seed in range(5):
-         fix_random_seed(random_seed)
-         phase_accuracy = inc_exp_sto.incremental_trainig_replay(args,'reddit','SAGE',method)
-         last_phase = phase_accuracy[-1]
-
-         class_acc_list = last_phase['prev_class_acc']
-         class_forget_list = last_phase['prev_class_forget']
-
-         class_acc_list.append(last_phase['test_accuracy'])
-
-         atp = sum(class_acc_list)/len(class_acc_list)
-         atf = sum(class_forget_list)/(len(class_forget_list))
-
-         randomseed_line = 'random seed: ' + str(random_seed) 
-         atpline  = ' atp: ' + str(atp) 
-         atfline  = ' atf: ' + str(atf) + '\n'
-         
-         file.write(randomseed_line)
-         file.write(atpline)
-         file.write(atfline)
-         file.close()
-
-
-      # phase_accuracy = inc_exp_sto.incremental_trainig_replay(args,'cora','SAGE',method)
-      # last_phase = phase_accuracy[-1]
-      # print(phase_accuracy)
-      # print('method:', method)
-      # class_acc_list = last_phase['prev_class_acc']
-      # class_acc_list.append(last_phase['test_accuracy'])
-      # print("average task accuracy: ",sum(class_acc_list)/len(class_acc_list))
-      # class_forget_list = last_phase['prev_class_forget']
-      # print("average task accuracy: ",sum(class_forget_list)/(len(class_forget_list)+1))
-      # input('checking')
+    
