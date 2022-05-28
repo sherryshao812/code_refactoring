@@ -58,8 +58,11 @@ def create_trainset(data, debug = True):
 
     # list of training dictionary
     training_dict_list = []
+    # list of binary mask for each task
     task_binary_label_list = []
+    # {node id : task index}
     task_dict = {}
+
     for task_index in range(task_number):
         # create population for each task and a dict for reference
         task_train_dict = {}
@@ -74,11 +77,11 @@ def create_trainset(data, debug = True):
         # store task index: (node id, task index)
         task_dict.update(((id, task_index) for id in task_population))
 
-        # create binary mask for each task
+        # create binary mask for each task, 1 means the node belongs to the task
         task_binary_label = utility.create_binary_label(task_population, num_node)
         task_binary_label_list.append(task_binary_label)
 
-        #test list for each task
+        # test list for each task
         task_test_id_list = [i for i in task_population if not i in task_train_id_list]
 
         if debug:
@@ -161,16 +164,19 @@ def create_trainset_replay(args, data, replay_strategy, debug=False):
 
     # list of training dictionary
     training_dict_list = []
+    # list of binary mask for each task
     task_binary_label_list = []
+    # {node id : task index}
     task_dict = {}
+
     for task_index in range(task_number):
         # create population for each task and a dict for reference
         task_train_dict = {}
         task_population = []
         task_train_id_list = []
         task_replay_list = []
-        for task_class_index in range(class_per_task):
 
+        for task_class_index in range(class_per_task):
             class_index = task_index * class_per_task + task_class_index
             class_node_id = class_node_id_list[class_index]
             class_train_id = class_train_id_list[class_index]
@@ -286,7 +292,7 @@ def create_trainset_mix(data):
     # load corresponding data
     graph, data_info = load_data(data)
 
-    num_layer = data_info['num_layer']
+    num_layer = 2
     class_train_size = data_info['class_train_size']
     task_number = data_info['task_number']
     class_per_task = data_info['class_per_task']
@@ -316,8 +322,11 @@ def create_trainset_mix(data):
 
     # create task information
     task_population_list = []
+    # list of binary mask for each task
     label_dict = {}
+    # {node id : task index}
     task_dict = {}
+
     for task_index in range(task_number):
         task_population = []
         for class_index in range(class_per_task):
@@ -363,7 +372,7 @@ def create_trainset_mix(data):
             sampler,            # The neighbor sampler
             device=device,      # Put the sampled MFGs on CPU or GPU
             # The following arguments are inherited from PyTorch DataLoader.
-            batch_size=len(task_test),    # Batch size
+            batch_size=len(task_test_id_list),    # Batch size
             shuffle=True,       # Whether to shuffle the nodes for every epoch
             drop_last=False,    # Whether to drop the last incomplete batch
             num_workers=0       # Number of sampler processes

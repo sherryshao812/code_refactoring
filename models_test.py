@@ -10,17 +10,3 @@ GAT_Model = GATStoModel_MultiHead(in_feats=1433, hid_feats=64, out_feats=7, num_
 print(GCN_Model.float())
 print(SAGE_Model.float())
 print(GAT_Model.float())
-
-
-# sampler = dgl.dataloading.MultiLayerFullNeighborSampler(2)
-# graph, data_info = load_data('cora')
-# train_list = list(range(40))
-# device = 'cpu'
-#
-# train_dataloader = dgl.dataloading.NodeDataLoader(graph, train_list, sampler,
-#   device=device, batch_size=1, shuffle=True, drop_last=False, num_workers=0
-# )
-#
-# with tqdm(train_dataloader) as tq:
-#     for step, (input_nodes, output_nodes, mfgs) in enumerate(tq):
-#         print(step, (input_nodes, output_nodes, mfgs))
