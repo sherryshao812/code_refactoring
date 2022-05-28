@@ -126,8 +126,11 @@ class Test(unittest.TestCase):
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
-            for i in test_dataloader:
-                self.assertEqual(len(i[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for j in test_dataloader:
+                self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for k in train_dataloader:
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
+
 
 
     def test_create_trainset_replay_cora_max_cover(self):
@@ -153,8 +156,10 @@ class Test(unittest.TestCase):
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
-            for i in test_dataloader:
-                self.assertEqual(len(i[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for j in test_dataloader:
+                self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for k in train_dataloader:
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
 
 
     def test_create_trainset_replay_cora_degree(self):
@@ -180,8 +185,10 @@ class Test(unittest.TestCase):
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
-            for i in test_dataloader:
-                self.assertEqual(len(i[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for j in test_dataloader:
+                self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for k in train_dataloader:
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
 
 
     def test_create_trainset_replay_cora_cluster(self):
@@ -207,8 +214,10 @@ class Test(unittest.TestCase):
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
-            for i in test_dataloader:
-                self.assertEqual(len(i[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for j in test_dataloader:
+                self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for k in train_dataloader:
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
 
 
     def test_create_trainset_replay_cora_center(self):
@@ -234,8 +243,10 @@ class Test(unittest.TestCase):
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
-            for i in test_dataloader:
-                self.assertEqual(len(i[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for j in test_dataloader:
+                self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for k in train_dataloader:
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
 
 
     def test_create_trainset_replay_cora_centroid(self):
@@ -261,8 +272,10 @@ class Test(unittest.TestCase):
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
-            for i in test_dataloader:
-                self.assertEqual(len(i[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for j in test_dataloader:
+                self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for k in train_dataloader:
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
 
 
 
@@ -289,8 +302,10 @@ class Test(unittest.TestCase):
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
-            for i in test_dataloader:
-                self.assertEqual(len(i[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for j in test_dataloader:
+                self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for k in train_dataloader:
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
 
 
 
@@ -317,8 +332,10 @@ class Test(unittest.TestCase):
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
-            for i in test_dataloader:
-                self.assertEqual(len(i[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for j in test_dataloader:
+                self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            for k in train_dataloader:
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
 
 
 
