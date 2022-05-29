@@ -5,6 +5,16 @@ import torch.nn.functional as F
 #  evaluate the model prediction accuracy
 ################################################################################
 def evaluate_multihead(model, graph, features, labels, mask, task_index):
+    # input:
+    #     model - the model to be evaluated
+    #     graph - a dgl graph
+    #     features - node imbeddings
+    #     labels - the target true labels
+    #     mask - a binary mask indicating which nodes to be check
+    #     task_index - the task index
+    # return:
+    #     accuracy - the percentage of correct predictions
+
     #prepare for evaluation
     model.eval()
 
@@ -24,10 +34,19 @@ def evaluate_multihead(model, graph, features, labels, mask, task_index):
 #  evaluate the all neighbors' prediction accuracy
 ################################################################################
 def evaluate_neighbor_acc(model, graph, node_features, node_labels, neighbor_list):
+    # input:
+    #     model - the model to be evaluated
+    #     graph - a dgl graph
+    #     node_features - node imbeddings
+    #     node_labels - the target true labels
+    #     neighbor_list - a nested list of neighboor node id
+    # return:
+    #     acc - a list of prediction accuracy of each neighbot
+
     acc = []
 
     for i in range(len(neighbor_list)):
-        test_mask = id_list_to_mask(neighbor_list[i],2708)
+        test_mask = id_list_to_mask(neighbor_list[i], 2708)
         current_acc = evaluate(model, graph, node_features, node_labels, test_mask)
         acc.append(current_acc)
 
@@ -38,6 +57,17 @@ def evaluate_neighbor_acc(model, graph, node_features, node_labels, neighbor_lis
 #  find the percentage of neighbor labels that is the target_label
 ################################################################################
 def same_label_percentage(model, graph, node_features, node_labels, neighbor_label_list, target_label):
+    # input:
+    #     model - the model to be evaluated
+    #     graph - a dgl graph
+    #     node_features - node imbeddings
+    #     node_labels - the target true labels
+    #     neighbor_label_list - a nested list of lists of neighbor labels
+    #     target_label -
+    # return:
+    #     same_label_percentage - a list of same-label percentages that each list in neighbor_label_list
+    #                           comparing to the target_label
+
     same_label_percentage = []
 
     for i in range(len(neighbor_label_list)):
@@ -58,6 +88,14 @@ def same_label_percentage(model, graph, node_features, node_labels, neighbor_lab
 #  evaluate the improvement from the incremental learning implementations
 ################################################################################
 def evaluate_improvement(before, after, method):
+    # input:
+    #     before - a list of before-accuracy
+    #     after - a list of after-accuracy
+    #     method - a string ('average')
+    # return:
+    #     ave_before -  average of before
+    #     ave_after - average of after
+
     if method == 'average':
         ave_before = sum(before)/len(before)
         ave_after = sum(after)/len(after)

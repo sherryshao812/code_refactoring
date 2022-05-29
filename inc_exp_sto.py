@@ -19,14 +19,23 @@ import evaluate
 from data import load_data
 
 
-##naive incremental learning setting
-##simply feed each class into the model one by one
+################################################################################
+# naive incremental learning setting, simply feed each class into the model one by one
+# without using replay strategy and the training/testing list is in task order.
+################################################################################
 def incremental_trainig(args, data, model_name):
+    # input:
+    #     args - a dictionary containing the training setting information
+    #     data - a string specifying the dataset, could be chosen from {'cora',
+    #            'cite', 'pubmed', 'cora_full', 'aifb', 'amazon_comp', 'amazon_photo'
+    #            'coau_cs', 'coau_phy' and 'reddit'}
+    #     model_name - a string specifying the model name, could be chosen from
+    #            {'GCN', 'SAGE', 'GAT'}
+    # return:
+    #     phase_accuracy - a list of phase accuracy
 
     #create training information
     training_dict_list, graph, data_info = data_process_factored.create_trainset(data)
-
-    # print(training_dict_list)
 
     #select the corresponding GNN models
     if model_name == 'GCN':
@@ -39,13 +48,13 @@ def incremental_trainig(args, data, model_name):
         model = models.GATStoModel_MultiHead(in_feats = args['num_infeat'], hid_feats = args['num_hidfeat'],
             out_feats = args['num_outchannel'], num_task = args['task_number'], num_heads=2,pred_head_out = args['class_per_task'])
 
-    #create list to store historical accuracy
+    # create list to store historical accuracy
     phase_accuracy = []
 
-    #train phase index
+    # train phase index
     train_index = 0
 
-    #iterative training over class
+    # iterative training over class
     for training_dict in tqdm(training_dict_list):
         #create dictionary to store training phase information
         train_phase_info = {}
@@ -96,15 +105,24 @@ def incremental_trainig(args, data, model_name):
     return phase_accuracy
 
 
-##naive incremental learning setting
-##simply feed each class into the model one by one
-def incremental_trainig_replay(args, data, model_name, replay_strategy,debug = False):
+################################################################################
+# naive incremental learning setting, simply feed each class into the model one by one
+# using replay strategy and the training/testing list is in task order.
+################################################################################
+def incremental_trainig_replay(args, data, model_name, replay_strategy, debug=False):
+    # input:
+    #     args - a dictionary containing the training setting information
+    #     data - a string specifying the dataset, could be chosen from {'cora',
+    #            'cite', 'pubmed', 'cora_full', 'aifb', 'amazon_comp', 'amazon_photo'
+    #            'coau_cs', 'coau_phy' and 'reddit'}
+    #     model_name - a string specifying the model name, could be chosen from
+    #            {'GCN', 'SAGE', 'GAT'}
+    #     debug - a bollean indicating whether to print debug message, default to be False
+    # return:
+    #     phase_accuracy - a list of phase accuracy
 
     #create training information
-    # training_dict_list, graph = data_process.create_trainset('cora',args)
-    training_dict_list, graph, data_info = data_process_factored.create_trainset_replay(args, data, replay_strategy)
-    print("data_info:",data_info)
-    # training_dict_list, graph = data_process_factored.create_trainset_replay(args,'cora','max_cover')
+    training_dict_list, graph, data_info = data_process_factored.create_trainset_replay(data, replay_strategy, args['replay_size'])
 
     #select the corresponding GNN models
     if model_name == 'GCN':
@@ -117,18 +135,18 @@ def incremental_trainig_replay(args, data, model_name, replay_strategy,debug = F
         model = models.GATStoModel_MultiHead(in_feats = data_info['num_infeat'], hid_feats = args['num_hidfeat'],
           out_feats = data_info['num_outchannel'], num_task = data_info['task_number'], num_heads=2, pred_head_out = data_info['class_per_task'])
 
-    #create list to store historical accuracy
+    # create list to store historical accuracy
     phase_accuracy = []
 
-    #train phase index
+    # train phase index
     train_index = 0
 
-    #iterative training over class
+    # iterative training over class
     for training_dict in tqdm(training_dict_list):
-        #create dictionary to store training phase information
+        # create dictionary to store training phase information
         train_phase_info = {}
 
-        #compute the representation of the replay set before training
+        # compute the representation of the replay set before training
         if train_index > 0 and args['loss'] == 'cmd_reg':
             representation_list = []
             for task_index in range(train_index+1):
@@ -145,10 +163,10 @@ def incremental_trainig_replay(args, data, model_name, replay_strategy,debug = F
             training_dict['replay_rep'] = torch.cat(representation_list)
 
 
-        #the trained model parameter should propogate to the next iteration
+        # the trained model parameter should propogate to the next iteration
         train_loss, test_acc, best_acc, model = train.train_multihead_model_onesample(model, args, data_info, training_dict)
 
-        #store the training phase info
+        # store the training phase info
         train_phase_info['train_loss'] = train_loss
         train_phase_info['test_accuracy'] = test_acc
         train_phase_info['best_accuracy'] = best_acc
@@ -182,7 +200,7 @@ def incremental_trainig_replay(args, data, model_name, replay_strategy,debug = F
                     prev_class_forget.append(forget)
 
 
-            #store the new accuracy for the previous class in the train phase info
+            # store the new accuracy for the previous class in the train phase info
             train_phase_info['prev_class_acc'] = prev_class_acc
             train_phase_info['prev_class_forget'] = prev_class_forget
 
@@ -194,16 +212,23 @@ def incremental_trainig_replay(args, data, model_name, replay_strategy,debug = F
 
 
 
-
-##naive incremental learning setting
-##simply feed each class into the model one by one
+################################################################################
+# naive incremental learning setting, simply feed each class into the model one by one
+# without using replay strategy and the training/testing list is in random order.
+################################################################################
 def regular_training(args, data, model_name):
+    # input:
+    #     args - a dictionary containing the training setting information
+    #     data - a string specifying the dataset, could be chosen from {'cora',
+    #            'cite', 'pubmed', 'cora_full', 'aifb', 'amazon_comp', 'amazon_photo'
+    #            'coau_cs', 'coau_phy' and 'reddit'}
+    #     model_name - a string specifying the model name, could be chosen from
+    #            {'GCN', 'SAGE', 'GAT'}
+    # return:
+    #     train_phase_info - a dictionary storing the training information
 
     #create training information
-    # training_dict_list, graph = data_process.create_trainset('cora',args)
     training_dict, graph, data_info = data_process_factored.create_trainset_mix(data)
-
-    # print(training_dict_list)
 
     #select the corresponding GNN models
     if model_name == 'GCN':
@@ -217,7 +242,7 @@ def regular_training(args, data, model_name):
           out_feats = args['num_outchannel'], num_task = args['task_number'], num_heads=2,pred_head_out = args['class_per_task'])
 
 
-    #create list to store historical accuracy
+    # create list to store historical accuracy
     train_phase_info = {}
     opt = torch.optim.Adam(model.parameters(),lr=args['lr'],weight_decay=args['weight_decay'])
     for epoch in range(args['epoches']):

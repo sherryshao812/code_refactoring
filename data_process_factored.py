@@ -113,7 +113,7 @@ def create_trainset(data, debug = True):
 #  Return a training and testing partition of the data based on learning stages
 #  with replay strategy. The return training/testing list is in task order
 ################################################################################
-def create_trainset_replay(args, data, replay_strategy, debug=False):
+def create_trainset_replay(data, replay_strategy, replay_size, debug=False):
     # input:
     #     data - a string specifying the dataset, could be chosen from {'cora',
     #            'cite', 'pubmed', 'cora_full', 'aifb', 'amazon_comp', 'amazon_photo'
@@ -133,8 +133,7 @@ def create_trainset_replay(args, data, replay_strategy, debug=False):
     #load corresponding data
     graph, data_info = load_data(data)
 
-    num_layer = args['num_layer']
-    replay_size = args['replay_size']
+    num_layer = 2
     class_train_size = data_info['class_train_size']
     task_number = data_info['task_number']
     class_per_task = data_info['class_per_task']
