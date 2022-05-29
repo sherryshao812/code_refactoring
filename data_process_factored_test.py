@@ -45,8 +45,11 @@ class Test(unittest.TestCase):
             self.assertEqual(task_train_dict['task_index'], i)
             self.assertEqual(len(train_dataloader), data_info['class_train_size'] * data_info['class_per_task'])
             self.assertEqual(len(test_dataloader), 1)
+            # test if all node id from train_dataloader belongs to correct classes
             for j in train_dataloader:
                 self.assertTrue(int(graph.ndata['label'][int(j[1])]) in range(i*data_info['class_per_task'], (i+1)*data_info['class_per_task']) )
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for k in test_dataloader:
                 self.assertEqual(len(k[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
@@ -71,8 +74,11 @@ class Test(unittest.TestCase):
             self.assertEqual(task_train_dict['task_index'], i)
             self.assertEqual(len(train_dataloader), data_info['class_train_size'] * data_info['class_per_task'])
             self.assertEqual(len(test_dataloader), 1)
+            # test if all node id from train_dataloader belongs to correct classes
             for j in train_dataloader:
                 self.assertTrue(int(graph.ndata['label'][int(j[1])]) in range(i*data_info['class_per_task'], (i+1)*data_info['class_per_task']) )
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for k in test_dataloader:
                 self.assertEqual(len(k[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
@@ -96,8 +102,11 @@ class Test(unittest.TestCase):
             self.assertEqual(task_train_dict['task_index'], i)
             self.assertEqual(len(train_dataloader), data_info['class_train_size'] * data_info['class_per_task'])
             self.assertEqual(len(test_dataloader), 1)
+            # test if all node id from train_dataloader belongs to correct classes
             for j in train_dataloader:
                 self.assertTrue(int(graph.ndata['label'][int(j[1])]) in range(i*data_info['class_per_task'], (i+1)*data_info['class_per_task']) )
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for k in test_dataloader:
                 self.assertEqual(len(k[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
@@ -125,11 +134,15 @@ class Test(unittest.TestCase):
             self.assertEqual(len(task_train_dict['replay_list']), args['replay_size'] * data_info['class_per_task'])
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            # test if all node id from train_dataloader belongs to correct classes or belongs to the replay set
             for k in train_dataloader:
-                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task'])
+                    or int(k[1]) in sum([training_dict_list[n]['replay_list'] for n in range(i)], []))
 
 
 
@@ -155,11 +168,15 @@ class Test(unittest.TestCase):
             self.assertEqual(len(task_train_dict['replay_list']), args['replay_size'] * data_info['class_per_task'])
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            # test if all node id from train_dataloader belongs to correct classes or belongs to the replay set
             for k in train_dataloader:
-                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task'])
+                    or int(k[1]) in sum([training_dict_list[n]['replay_list'] for n in range(i)], []))
 
 
     def test_create_trainset_replay_cora_degree(self):
@@ -184,11 +201,15 @@ class Test(unittest.TestCase):
             self.assertEqual(len(task_train_dict['replay_list']), args['replay_size'] * data_info['class_per_task'])
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            # test if all node id from train_dataloader belongs to correct classes or belongs to the replay set
             for k in train_dataloader:
-                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task'])
+                    or int(k[1]) in sum([training_dict_list[n]['replay_list'] for n in range(i)], []))
 
 
     def test_create_trainset_replay_cora_cluster(self):
@@ -213,11 +234,15 @@ class Test(unittest.TestCase):
             self.assertEqual(len(task_train_dict['replay_list']), args['replay_size'] * data_info['class_per_task'])
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            # test if all node id from train_dataloader belongs to correct classes or belongs to the replay set
             for k in train_dataloader:
-                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task'])
+                    or int(k[1]) in sum([training_dict_list[n]['replay_list'] for n in range(i)], []))
 
 
     def test_create_trainset_replay_cora_center(self):
@@ -242,11 +267,15 @@ class Test(unittest.TestCase):
             self.assertEqual(len(task_train_dict['replay_list']), args['replay_size'] * data_info['class_per_task'])
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            # test if all node id from train_dataloader belongs to correct classes or belongs to the replay set
             for k in train_dataloader:
-                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task'])
+                    or int(k[1]) in sum([training_dict_list[n]['replay_list'] for n in range(i)], []))
 
 
     def test_create_trainset_replay_cora_centroid(self):
@@ -271,12 +300,15 @@ class Test(unittest.TestCase):
             self.assertEqual(len(task_train_dict['replay_list']), args['replay_size'] * data_info['class_per_task'])
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            # test if all node id from train_dataloader belongs to correct classes or belongs to the replay set
             for k in train_dataloader:
-                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
-
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task'])
+                    or int(k[1]) in sum([training_dict_list[n]['replay_list'] for n in range(i)], []))
 
 
     def test_create_trainset_replay_coau_cs_uniform(self):
@@ -301,12 +333,15 @@ class Test(unittest.TestCase):
             self.assertEqual(len(task_train_dict['replay_list']), args['replay_size'] * data_info['class_per_task'])
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            # test if all node id from train_dataloader belongs to correct classes or belongs to the replay set
             for k in train_dataloader:
-                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
-
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task'])
+                    or int(k[1]) in sum([training_dict_list[n]['replay_list'] for n in range(i)], []))
 
 
     def test_create_trainset_replay_reddit_uniform(self):
@@ -331,12 +366,15 @@ class Test(unittest.TestCase):
             self.assertEqual(len(task_train_dict['replay_list']), args['replay_size'] * data_info['class_per_task'])
             self.assertEqual(len(replay_dataloader), 1)
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
+            # test if all node id from train_dataloader belongs to correct classes or belongs to the replay set
             for k in train_dataloader:
-                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task']) )
-
+                self.assertTrue(int(graph.ndata['label'][int(k[1])]) in range(i * data_info['class_per_task'], (i+1) * data_info['class_per_task'])
+                    or int(k[1]) in sum([training_dict_list[n]['replay_list'] for n in range(i)], []))
 
 
     def test_create_trainset_mix_cora(self):
@@ -352,11 +390,14 @@ class Test(unittest.TestCase):
         train_dataloader = training_dict['train_dataloader']
         test_dataloader_list = training_dict['task_test_dataloader']
 
+        # test if the number of nodes in train_dataloader is equal to the combination of all class_train_node
         self.assertEqual(len(train_dataloader), data_info['class_train_size'] * data_info['class_per_task'] * data_info['task_number'])
         self.assertEqual(len(test_dataloader_list), data_info['task_number'])
         for i in range(data_info['task_number']):
             test_dataloader = test_dataloader_list[i]
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
@@ -375,11 +416,14 @@ class Test(unittest.TestCase):
         train_dataloader = training_dict['train_dataloader']
         test_dataloader_list = training_dict['task_test_dataloader']
 
+        # test if the number of nodes in train_dataloader is equal to the combination of all class_train_node
         self.assertEqual(len(train_dataloader), data_info['class_train_size'] * data_info['class_per_task'] * data_info['task_number'])
         self.assertEqual(len(test_dataloader_list), data_info['task_number'])
         for i in range(data_info['task_number']):
             test_dataloader = test_dataloader_list[i]
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
@@ -399,11 +443,14 @@ class Test(unittest.TestCase):
         train_dataloader = training_dict['train_dataloader']
         test_dataloader_list = training_dict['task_test_dataloader']
 
+        # test if the number of nodes in train_dataloader is equal to the combination of all class_train_node
         self.assertEqual(len(train_dataloader), data_info['class_train_size'] * data_info['class_per_task'] * data_info['task_number'])
         self.assertEqual(len(test_dataloader_list), data_info['task_number'])
         for i in range(data_info['task_number']):
             test_dataloader = test_dataloader_list[i]
             self.assertEqual(len(test_dataloader), 1)
+            # test if the number of nodes in test_dataloader is equal to the total
+            # number of nodes belonging to the task net of number of nodes in the training set
             num_task_node = sum([list(graph.ndata['label']).count(i*data_info['class_per_task']+k) for k in range(data_info['class_per_task'])])
             for j in test_dataloader:
                 self.assertEqual(len(j[1]), num_task_node - data_info['class_train_size'] * data_info['class_per_task'])
